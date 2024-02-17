@@ -1,30 +1,14 @@
 const std = @import("std");
 const locale = @cImport(@cInclude("locale.h"));
 
-pub const LC = LC: {
-    var count = 0;
-    for (@typeInfo(locale).Struct.decls) |decl| {
-        if (std.mem.startsWith(u8, decl.name, "LC_")) count += 1;
-    }
-
-    var fields: [count]std.builtin.Type.EnumField = undefined;
-    var i = 0;
-    for (@typeInfo(locale).Struct.decls) |decl| {
-        if (std.mem.startsWith(u8, decl.name, "LC_")) {
-            fields[i] = .{
-                .name = decl.name["LC_".len..],
-                .value = @field(locale, decl.name),
-            };
-            i += 1;
-        }
-    }
-
-    break :LC @Type(.{ .Enum = .{
-        .tag_type = c_int,
-        .fields = &fields,
-        .decls = &.{},
-        .is_exhaustive = false,
-    } });
+pub const LC = enum(c_int) {
+    MESSAGES = locale.LC_MESSAGES,
+    COLLATE = locale.LC_COLLATE,
+    CTYPE = locale.LC_CTYPE,
+    MONETARY = locale.LC_MONETARY,
+    NUMERIC = locale.LC_NUMERIC,
+    TIME = locale.LC_TIME,
+    _,
 };
 
 // Reference: https://sourceware.org/git/?p=glibc.git;a=blob;f=intl/libintl.h;h=5eee662ba80774b35ba0d7b6c1406b7fc51251fd;hb=HEAD
