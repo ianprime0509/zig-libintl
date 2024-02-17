@@ -1,0 +1,11 @@
+.{
+    .name = "zig-libintl",
+    .version = "0.0.0",
+    .paths = .{
+        "src",
+        "LICENSE",
+        "README.md",
+        "build.zig",
+        "build.zig.zon",
+    },
+}
