@@ -5,7 +5,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const libintl = b.addModule("libintl", .{
-        .root_source_file = .{ .path = "src/libintl.zig" },
+        .root_source_file = b.path("src/libintl.zig"),
         .target = target,
         .optimize = optimize,
         .link_libc = true,
@@ -15,7 +15,7 @@ pub fn build(b: *std.Build) void {
 
     // TODO: will be easier with https://github.com/ziglang/zig/pull/18752
     const test_libintl = b.addTest(.{
-        .root_source_file = .{ .path = "src/libintl.zig" },
+        .root_source_file = b.path("src/libintl.zig"),
         .target = target,
         .optimize = optimize,
         .link_libc = true,
