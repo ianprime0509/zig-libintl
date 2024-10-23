@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        zig-version: [0.13.0, master]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: ${{ matrix.zig-version }}
+      - name: Test
+        run: zig build test
+
+  build-docs:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Zig
+        uses: mlugg/setup-zig@v1
+      - name: Build docs
+        if: github.ref == 'refs/heads/main'
+        run: zig build docs
+      - name: Upload docs artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: zig-out/docs
+
+  publish-docs:
+    needs: [build-docs]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

@@ -1,7 +1,9 @@
+//! Zig bindings for libintl, the library providing the `gettext` function and
+//! friends used for internationalization.
+
 const std = @import("std");
 const mem = std.mem;
 
-/// Raw C API.
 pub const c = @import("c.zig");
 
 pub const Category = enum(c_int) {
@@ -80,7 +82,7 @@ test pgettext {
     try std.testing.expectEqualStrings("message", pgettext("context", "message"));
 }
 
-pub fn dpgettext(comptime domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid: [:0]const u8) [:0]const u8 {
+pub fn dpgettext(domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid: [:0]const u8) [:0]const u8 {
     const ctxt_id = msgctxt ++ msgctxt_sep ++ msgid;
     const translation = dgettext(domainname, ctxt_id);
     return if (translation.ptr == ctxt_id.ptr) msgid else translation;
@@ -90,7 +92,7 @@ test dpgettext {
     try std.testing.expectEqualStrings("message", dpgettext("com.example.Application", "context", "message"));
 }
 
-pub fn dcpgettext(comptime domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid: [:0]const u8, comptime category: Category) [:0]const u8 {
+pub fn dcpgettext(domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid: [:0]const u8, category: Category) [:0]const u8 {
     const ctxt_id = msgctxt ++ msgctxt_sep ++ msgid;
     const translation = dcgettext(domainname, ctxt_id, category);
     return if (translation.ptr == ctxt_id.ptr) msgid else translation;
@@ -115,7 +117,7 @@ test npgettext {
     try std.testing.expectEqualStrings("messages", npgettext("context", "message", "messages", 2));
 }
 
-pub fn dnpgettext(comptime domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid1: [:0]const u8, comptime msgid2: [:0]const u8, n: c_ulong) [:0]const u8 {
+pub fn dnpgettext(domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid1: [:0]const u8, comptime msgid2: [:0]const u8, n: c_ulong) [:0]const u8 {
     const ctxt_id = msgctxt ++ msgctxt_sep ++ msgid1;
     const translation = dngettext(domainname, ctxt_id, msgid2, n);
     if (translation.ptr == ctxt_id.ptr) {
@@ -130,7 +132,7 @@ test dnpgettext {
     try std.testing.expectEqualStrings("messages", dnpgettext("com.example.Application", "context", "message", "messages", 2));
 }
 
-pub fn dcnpgettext(comptime domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid1: [:0]const u8, comptime msgid2: [:0]const u8, n: c_ulong, comptime category: Category) [:0]const u8 {
+pub fn dcnpgettext(domainname: [:0]const u8, comptime msgctxt: [:0]const u8, comptime msgid1: [:0]const u8, comptime msgid2: [:0]const u8, n: c_ulong, category: Category) [:0]const u8 {
     const ctxt_id = msgctxt ++ msgctxt_sep ++ msgid1;
     const translation = dcngettext(domainname, ctxt_id, msgid2, n, category);
     if (translation.ptr == ctxt_id.ptr) {

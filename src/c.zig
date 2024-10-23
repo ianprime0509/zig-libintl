@@ -1,3 +1,5 @@
+//! The raw C API.
+
 const std = @import("std");
 const locale = @cImport(@cInclude("locale.h"));
 
