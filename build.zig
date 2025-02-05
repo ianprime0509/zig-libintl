@@ -10,16 +10,11 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .link_libc = true,
     });
-    _ = libintl;
     // TODO: platform-specific libraries to link
 
-    // TODO: will be easier with https://github.com/ziglang/zig/pull/20388
     const test_step = b.step("test", "Run the tests");
     const libintl_test = b.addTest(.{
-        .root_source_file = b.path("src/libintl.zig"),
-        .target = target,
-        .optimize = optimize,
-        .link_libc = true,
+        .root_module = libintl,
     });
     const libintl_test_run = b.addRunArtifact(libintl_test);
     test_step.dependOn(&libintl_test_run.step);
@@ -27,10 +22,7 @@ pub fn build(b: *std.Build) void {
     const docs_step = b.step("docs", "Build the documentation");
     const libintl_docs = b.addObject(.{
         .name = "libintl",
-        .root_source_file = b.path("src/libintl.zig"),
-        .target = target,
-        .optimize = .Debug,
-        .link_libc = true,
+        .root_module = libintl,
     });
     const libintl_docs_copy = b.addInstallDirectory(.{
         .source_dir = libintl_docs.getEmittedDocs(),
