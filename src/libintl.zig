@@ -7,12 +7,12 @@ const mem = std.mem;
 pub const c = @import("c.zig");
 
 pub const Category = enum(c_int) {
-    messages = @intFromEnum(c.LC.MESSAGES),
-    collate = @intFromEnum(c.LC.COLLATE),
-    ctype = @intFromEnum(c.LC.CTYPE),
-    monetary = @intFromEnum(c.LC.MONETARY),
-    numeric = @intFromEnum(c.LC.NUMERIC),
-    time = @intFromEnum(c.LC.TIME),
+    messages = @intFromEnum(std.c.LC.MESSAGES),
+    collate = @intFromEnum(std.c.LC.COLLATE),
+    ctype = @intFromEnum(std.c.LC.CTYPE),
+    monetary = @intFromEnum(std.c.LC.MONETARY),
+    numeric = @intFromEnum(std.c.LC.NUMERIC),
+    time = @intFromEnum(std.c.LC.TIME),
     _,
 };
 
